@@ -15,16 +15,16 @@
         label-position="top"
         label-width="80px"
       >
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input v-model="form.password"></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">登录</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" @click="submitForm('loginForm')">登录</el-button>
+          <el-button @click="submitForm('loginForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -90,7 +90,7 @@ export default {
           }).then(({ data: { data, meta } }) => {
             if (meta.status == 200) {
               localStorage.setItem("token", data.token);
-              this.$router.oush("/home");
+              this.$router.push("/home");
             }
           });
         } else {
