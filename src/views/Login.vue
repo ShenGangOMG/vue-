@@ -6,6 +6,11 @@
     <!-- el-col 布局组件 列组件 -->
     <!-- span 属性用来设置当前列所占格数 -->
     <el-col :xs="14" :sm="12" :md="10" :lg="8" :xl="6">
+      <pre class="pre_box">
+      <h1>沉梦昂志</h1>
+
+                                        --大刚哥
+    </pre>
       <!-- 表单内容 -->
       <el-form
         ref="loginForm"
@@ -115,5 +120,10 @@ export default {
   border-radius: 10px;
   padding: 30px 20px;
   min-width: 400px;
+}
+.pre_box {
+  position: relative;
+  top: -40px;
+  right: -30px;
 }
 </style>
