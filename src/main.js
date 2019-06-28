@@ -29,10 +29,6 @@ router.beforeEach((to, from, next) => {
     router.push('/login')
   }
 
-  // console.log(to, from);
-  // console.log("导航守卫工作啦！！");
-  // next()
-
   // next 这里提供的方法，是用来进行页面的跳转的
   // 如果不调用这个方法，那么页面就不会进入
   // next();
