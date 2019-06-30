@@ -11,7 +11,7 @@
                 <el-col :span="6" class="header-right">
                     <div>
                         欢迎39期星耀会员
-                        <a href="#">退出</a>
+                        <a href="#" @click.prevent="logout">退出</a>
                     </div>
                 </el-col>
             </el-row>
@@ -120,7 +120,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+    methods: {
+        logout(){
+            // 1. 清空token
+            localStorage.removeItem('token');
+            // 2. 跳转到登录页
+            this.$router.push("/login");
+        }
+    }
+};
 </script>
 
 <style>

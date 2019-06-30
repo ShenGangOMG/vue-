@@ -90,7 +90,7 @@
                     <el-input v-model="addUserFormData.username" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" prop="password">
-                    <el-input v-model="addUserFormData.password" autocomplete="off"></el-input>
+                    <el-input v-model="addUserFormData.password" type="password" show-password autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="addUserFormData.email" autocomplete="off"></el-input>
