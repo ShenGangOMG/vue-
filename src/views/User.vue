@@ -136,7 +136,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { constants } from "crypto";
 export default {
     data() {
@@ -229,15 +228,12 @@ export default {
     },
     methods: {
         getUserList() {
-            axios({
-                url: "http://localhost:8888/api/private/v1/users",
+            this.$http({
+                url: "users",
                 params: {
                     query: this.keyword,
                     pagenum: this.currentpage,
                     pagesize: this.pagesize
-                },
-                headers: {
-                    Authorization: localStorage.getItem("token")
                 }
             }).then(res => {
                 // console.log(res);
@@ -264,12 +260,9 @@ export default {
             console.log(user);
             // 在这里应该给后台发送数据请求，将当前用户的状态进行修改
 
-            let res = await axios({
-                url: `http://localhost:8888/api/private/v1/users/${user.id}/state/${user.mg_state}`,
-                method: "put",
-                headers: {
-                    Authorization: localStorage.getItem("token")
-                }
+            let res = await this.$http({
+                url: `users/${user.id}/state/${user.mg_state}`,
+                method: "put"
             });
 
             if (res.data.meta.status == 200) {
@@ -301,12 +294,9 @@ export default {
                     }
                 );
                 // 向后台发送请求，删除当前行的用户
-                let res = await axios({
-                    url: `http://localhost:8888/api/private/v1/users/${id}`,
-                    method: "delete",
-                    headers: {
-                        Authorization: localStorage.getItem("token")
-                    }
+                let res = await this.$http({
+                    url: `users/${id}`,
+                    method: "delete"
                 });
                 // 重新渲染当前的列表数据
                 // console.log(res);
@@ -337,13 +327,10 @@ export default {
                 await this.$refs.addUserForm.validate();
                 console.log("校验成功");
                 // 2. 表单校验成功之后发送ajax请求
-                let res = await axios({
-                    url: "http://localhost:8888/api/private/v1/users",
+                let res = await this.$http({
+                    url: "users",
                     method: "post",
-                    data: this.addUserFormData,
-                    headers: {
-                        Authorization: localStorage.getItem("token")
-                    }
+                    data: this.addUserFormData
                 });
                 console.log(res);
                 if (res.data.meta.status == 201) {
@@ -369,11 +356,8 @@ export default {
             // 1. 打开模态框
             this.isEditUserDialogShow = true;
             // 2. 使用id去后台获取用户数据，展示到模态框中
-            let res = await axios({
-                url: `http://localhost:8888/api/private/v1/users/${id}`,
-                headers: {
-                    Authorization: localStorage.getItem('token')
-                }
+            let res = await this.$http({
+                url: `users/${id}`
             })
 
             // console.log(res);
@@ -384,15 +368,12 @@ export default {
                 await this.$refs.editUserForm.validate()
                 // 向后台提交请求，修改用户数据
 
-                let res = await axios({
-                    url: `http://localhost:8888/api/private/v1/users/${this.editUserFormData.id}`,
+                let res = await this.$http({
+                    url: `users/${this.editUserFormData.id}`,
                     method: "put",
                     data: {
                         mobile: this.editUserFormData.mobile,
                         email: this.editUserFormData.email
-                    },
-                    headers: {
-                        Authorization: localStorage.getItem('token')
                     }
                 })
 

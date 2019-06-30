@@ -37,8 +37,6 @@
 // 3. 需要把这个校验规则对象绑定到el-form组件上 :rules="校验规则则对象"
 // 4. 需要给每一项被校验的el-form-item组件添加 prop属性 属性值就是 绑定的数据的名称
 
-import axios from "axios";
-
 export default {
     data() {
         return {
@@ -82,8 +80,8 @@ export default {
 
             if (valid) {
                 try {
-                    let res = await axios({
-                        url: "http://localhost:8888/api/private/v1/login",
+                    let res = await this.$http({
+                        url: "login",
                         method: "post",
                         data: this.form
                     });
