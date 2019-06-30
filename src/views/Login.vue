@@ -24,7 +24,8 @@
           <el-input v-model="form.username"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password"></el-input>
+          <!-- 这个地方的show-password就是密码可视化的小眼睛 -->
+          <el-input type="password" v-model="form.password" show-password></el-input>
         </el-form-item>
 
         <el-form-item>
@@ -43,8 +44,8 @@
 // 3. 把规则绑定对象绑定到el-form组件上 :rules="校验规则对象"
 // 4. 需要给每一项被校验的el-form-item组件添加prop属性 属性值就是 绑定的数据的名称
 
-//发送ajax
-import axios from "axios";
+//发送ajax--在baseURL原型中
+// import axios from "axios";
 export default {
   data() {
     return {
@@ -82,21 +83,33 @@ export default {
       }
     };
   },
+  // 请求失败的处理
   methods: {
     async submitForm(formName) {
       // 通过validate方法,对表单做整体校验
       let valid = await this.$refs[formName].validate();
-
+      // 在JavaScript可以使用try...catch来进行异常处理
       if (valid) {
-        let res = await axios({
-          url: "http://localhost:8888/api/private/v1/login",
-          method: "post",
-          data: this.form
-        });
+        try {
+          let res = await this.$http({
+            url: "login",
+            method: "post",
+            data: this.form
+          });
 
-        if (res.data.meta.status == 200) {
-          localStorage.setItem("token", res.data.data.token);
-          this.$router.push("/home");
+          if (res.data.meta.status == 200) {
+            localStorage.setItem("token", res.data.data.token);
+            this.$router.push("/home");
+          } else {
+            this.$message({
+              message: res.data.meta.mag,
+              type: "error",
+              duration: 1000
+            });
+          }
+        } catch (err) {
+          // catch 就相当于失败的回调
+          console.log("请求发送失败", err);
         }
       } else {
         return false;
