@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Login from "./views/Login/Login.vue";
 import Home from "./views/Home/Home.vue";
 import User from "./views/User/User.vue";
+import Roles from "./views/Roles/Roles.vue";
 
 Vue.use(Router);
 
@@ -21,6 +22,10 @@ const router = new Router({
           // 如果不加/  那么访问的时候直接  /home/user
           path: "/user",
           component: User
+        },
+        {
+          path: "/roles",
+          component: Roles
         }
       ]
     },
