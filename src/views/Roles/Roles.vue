@@ -5,7 +5,7 @@
             <el-breadcrumb-item>权限管理</el-breadcrumb-item>
             <el-breadcrumb-item>角色列表</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-table :data="roleList" stripe style="width: 100%">
+        <el-table ref="roleTable" :data="roleList" stripe style="width: 100%">
             <!-- type="expand" 给列加上这个属性之后，可以实现 展开行的效果 -->
             <el-table-column type="expand">
                 <template v-slot="{row}">
@@ -17,7 +17,7 @@
                         :key="level1.id"
                     >
                         <el-col :span="6">
-                            <el-tag closable>{{level1.authName}}</el-tag>
+                            <el-tag closable @close="deleteRight(row, level1.id)">{{level1.authName}}</el-tag>
                             <i class="el-icon-arrow-right"></i>
                         </el-col>
                         <el-col>
@@ -29,7 +29,7 @@
                                 :key="level2.id"
                             >
                                 <el-col :span="6">
-                                    <el-tag closable type="success">{{level2.authName}}</el-tag>
+                                    <el-tag closable type="success" @close="deleteRight(row, level2.id)">{{level2.authName}}</el-tag>
                                     <i class="el-icon-arrow-right"></i>
                                 </el-col>
                                 <el-col>
@@ -39,6 +39,7 @@
                                         closable
                                         v-for="level3 in level2.children"
                                         :key="level3.id"
+                                        @close="deleteRight(row, level3.id)"
                                     >{{level3.authName}}</el-tag>
                                 </el-col>
                             </el-row>
@@ -113,6 +114,51 @@ export default {
         };
     },
     methods: {
+        async deleteRight(row, id){
+            // console.log(row, id);
+            // 把row里面children中所有的id拼接成一个数组
+            // 获取一级权限的id，组合成数组
+            let level1Ids = [];
+            let level2Ids = [];
+            let level3Ids = [];
+            // 获取二级权限的id，组合成数组
+            row.children.forEach(level1 => {
+                level1Ids.push(level1.id);
+                level1.children.forEach(level2 => {
+                    level2Ids.push(level2.id);
+                    level2.children.forEach(level3 => {
+                        level3Ids.push(level3.id);
+                    });
+                });
+            });
+            let result = [...level1Ids, ...level2Ids, ...level3Ids];
+            // 数组中的id对应的元素删除掉
+            // 再拼接成字符串ids
+            let ids = result.filter(v => v !== id).join();
+
+            /// 发送ajax请求
+
+            let res = await this.$http({
+                url: `roles/${row.id}/rights`,
+                method: "post",
+                data: {
+                    rids: ids
+                }
+            });
+
+            // console.log(res);
+            this.$message({
+                type: "success",
+                message: res.data.meta.msg,
+                duration: 1000
+            })
+
+            this.getRoleList();
+
+            // this.$nextTick(() => {
+            //     this.$refs.roleTable.toggleRowExpansion(this.roleList.find(v => v.id == row.id), true);
+            // })
+        },
         async updateRoleRights() {
             // 1. 获取tree组件中，所有被勾选的节点的id
             let ids = [
