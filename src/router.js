@@ -5,15 +5,13 @@ import Login from './views/Login/Login.vue'
 // 引入Home主页
 import Home from './views/Home/Home.vue'
 import User from './views/User/User.vue'
+import Roles from './views/Roles/Roles.vue'
+import Rights from './views/Rights/Rights.vue'
+
 Vue.use(Router)
 
 const router = new Router({
   routes: [
-    {
-      // 如果链接不给指定页面redirect重定向到主页,如果未登陆,导航守卫会将页面定位到登陆页
-      path: '/',
-      redirect: '/home'
-    },
     {
       path: '/login',
       component: Login
@@ -25,6 +23,19 @@ const router = new Router({
         {
           path: '/user',
           component: User
+        },
+        {
+          path: '/roles',
+          component: Roles
+        },
+        {
+          path: '/rights',
+          component: Rights
+        },
+        {
+          // 如果链接不给指定页面redirect重定向到主页,如果未登陆,导航守卫会将页面定位到登陆页
+          path: '/',
+          redirect: '/home'
         }
       ]
     }

@@ -153,7 +153,7 @@ export default {
       // console.log(user);
       // 给后台发送请求,修改当前用户状态
       let res = await this.$http({
-        url: `users/${user.id}/state/${user.ma_state}`,
+        url: `users/${user.id}/state/${user.mg_state}`,
         method: 'put'
       })
       if (res.data.meta.status == 200) {
@@ -162,6 +162,8 @@ export default {
           message: res.data.meta.msg,
           duration: 1000
         })
+        console.log(res.data.meta)
+        console.log(res.data.data)
       } else {
         this.$message({
           type: 'error',
