@@ -4,7 +4,7 @@
     <el-header>
       <el-row type="flex" justify="space-between" align="middle">
         <el-col :span="6">
-          <img src="../assets/logo.png" alt />
+          <img src="../../assets/logo.png" alt />
         </el-col>
         <el-col>
           <h1>后台管理系统</h1>
@@ -48,11 +48,11 @@
               <i class="el-icon-location"></i>
               <span>权限管理</span>
             </template>
-            <el-menu-item index="#">
+            <el-menu-item index="/roles">
               <i class="el-icon-menu"></i>
               <span>角色列表</span>
             </el-menu-item>
-            <el-menu-item index="#">
+            <el-menu-item index="/rights">
               <i class="el-icon-menu"></i>
               <span>权限列表</span>
             </el-menu-item>
