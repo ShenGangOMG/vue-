@@ -83,13 +83,45 @@ export default {
             trigger: 'change'
           }
         ]
-      }
+      },
+      isAssainRoleDialogShow: false,
+      assainRoleData: {
+        username: '',
+        rid: ''
+      },
+      roleList: []
     }
   },
   created() {
     this.getUserList()
   },
   methods: {
+    async updateRole() {
+      let res = await this.$http({
+        url: `users/${this.assainRoleData.id}/role`,
+        method: 'put',
+        data: {
+          rid: this.assainRoleData.rid
+        }
+      })
+      this.$message({
+        type: 'success',
+        message: res.data.meta.msg,
+        duration: 1000
+      })
+      this.isAssainRoleDialogShow = false
+    },
+    async showAssainRoleDialog(row) {
+      this.isAssainRoleDialogShow = true
+      let res = await this.$http({
+        url: `users/${row.id}`
+      })
+      this.assainRoleData = res.data.data
+      let roleResult = await this.$http({
+        url: 'roles'
+      })
+      this.roleList = roleResult.data.data
+    },
     getUserList() {
       this.$http({
         url: 'users',
@@ -114,6 +146,7 @@ export default {
     },
     search() {
       // 调用getUserList方法,重新请求数据
+      this.currentpage = 1
       this.getUserList()
     },
     async toggleState(user) {
@@ -206,7 +239,7 @@ export default {
       }
     },
     async openEditUserDialog(id) {
-      console.log(id)
+      // console.log(id)
       // 打开编辑模态框
       this.isEditUserDialogShow = true
       // 用id到后台取数据,放到模态框
