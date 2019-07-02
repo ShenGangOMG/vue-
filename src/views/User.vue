@@ -254,6 +254,7 @@ export default {
         },
         search() {
             // 只需要调用getUserList方法，重新请求数据即可
+            this.currentpage = 1;
             this.getUserList();
         },
         async toggleState(user) {
