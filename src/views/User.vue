@@ -6,8 +6,9 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索框 -->
-    <el-row :hutter="20">
+    <el-row :gutter="20">
       <el-col :span="6">
+        <!-- 在父组件中给子组件绑定一个原生的事件，就将子组件变成了普通的HTML标签，不加'. native'事件是无法触发的-->
         <el-input
           placeholder="请输入内容"
           v-model="keyword"
@@ -96,7 +97,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="isAddUserDialogShow= false">取 消</el-button>
-        <el-button type="primary" @click="addUser = false">确 定</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -104,21 +105,27 @@
     <el-dialog
       title="修改用户信息"
       :visible.sync="isEditUserDialogShow"
-      @close="$refs.addUserForm.resetFields()"
+      @close="$refs.editUserForm.resetFields()"
     >
-      <el-form :model="addUserFormData" label-width="100px" :rules="addUserRules" ref="addUserForm">
+      <!-- 数据引用,和表单校验 -->
+      <el-form
+        :model="editUserFormData"
+        label-width="100px"
+        :rules="editUserRules"
+        ref="editUserForm"
+      >
         <el-form-item label="用户名" prop="username">
           <el-tag type="info" v-text="editUserFormData.username"></el-tag>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addUserFormData.email" autocomplete="off"></el-input>
+          <el-input v-model="editUserFormData.email" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="电话" prop="mobile">
-          <el-input v-model="addUserFormData.mobile" autocomplete="off"></el-input>
+          <el-input v-model="editUserFormData.mobile" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="isAddUserDialogShow= false">取 消</el-button>
+        <el-button @click="iseditUserDialogShow= false">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
       </div>
     </el-dialog>
@@ -245,7 +252,7 @@ export default {
       this.getUserList();
     },
     async toggleState(user) {
-      console.log(user);
+      // console.log(user);
       // 给后台发送请求,修改当前用户状态
       let res = await this.$http({
         url: `users/${user.id}/state/${user.ma_state}`,
@@ -302,15 +309,18 @@ export default {
     },
     async addUser() {
       // 表单校验
+
       try {
         await this.$refs.addUserForm.validate();
         // console.log("校验成功");
-        // 成功发送ajax
+        // 校验成功发送ajax
         let res = await this.$http({
           url: "users",
           method: "post",
           data: this.addUserFormData
+          // BUG
         });
+        // console.log(res);
         if (res.data.meta.status == 201) {
           this.$message({
             message: res.data.meta.msg,
@@ -327,11 +337,12 @@ export default {
           });
         }
       } catch (err) {
-        console.log("校验失败");
+        // console.log("校验失败");
       }
     },
     async openEditUserDialog(id) {
-      // 打开模态框
+      console.log(id);
+      // 打开编辑模态框
       this.isEditUserDialogShow = true;
       // 用id到后台取数据,放到模态框
       let res = await this.$http({
@@ -341,7 +352,7 @@ export default {
     },
     async editUser() {
       try {
-        await this.refs.editUserForm.validate();
+        await this.$refs.editUserForm.validate();
         // 向后台提交数据,修改用户数据
         let res = await this.$http({
           url: `users/${this.editUserFormData.id}`,
@@ -352,6 +363,7 @@ export default {
           }
         });
         if (res.data.meta.status == 200) {
+          // console.log(res);
           // 提示更新成功
           this.$message({
             type: "success",

@@ -109,7 +109,7 @@ export default {
           }
         } catch (err) {
           // catch 就相当于失败的回调
-          console.log("请求发送失败", err);
+          // console.log("请求发送失败", err);
         }
       } else {
         return false;
