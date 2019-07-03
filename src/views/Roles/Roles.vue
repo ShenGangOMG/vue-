@@ -122,52 +122,37 @@ export default {
     },
     methods: {
         async deleteRight(row, id) {
-            // console.log(row, id);
-            // 把row里面children中所有的id拼接成一个数组
-            // 获取一级权限的id，组合成数组
-            let level1Ids = [];
-            let level2Ids = [];
-            let level3Ids = [];
-            // 获取二级权限的id，组合成数组
-            row.children.forEach(level1 => {
-                level1Ids.push(level1.id);
-                level1.children.forEach(level2 => {
-                    level2Ids.push(level2.id);
-                    level2.children.forEach(level3 => {
-                        level3Ids.push(level3.id);
-                    });
-                });
-            });
-            let result = [...level1Ids, ...level2Ids, ...level3Ids];
-            // 数组中的id对应的元素删除掉
-            // 再拼接成字符串ids
-            let ids = result.filter(v => v !== id).join();
+            // console.log('删除单个权限')
+            // 调用接口，删除当前角色指定的权限信息
 
-            /// 发送ajax请求
+            // 接口信息
+            //  roles/:id/rights/:rightID
+            // method: delete
 
             let res = await this.$http({
-                url: `roles/${row.id}/rights`,
-                method: "post",
-                data: {
-                    rids: ids
-                }
+                url: `roles/${row.id}/rights/${id}`,
+                method: "delete"
             });
 
             // console.log(res);
-            this.$message({
-                type: "success",
-                message: res.data.meta.msg,
-                duration: 1000
-            });
-
-            this.getRoleList(() => {
-                this.$nextTick(() => {
-                    this.$refs.roleTable.toggleRowExpansion(
-                        this.roleList.find(v => v.id == row.id),
-                        true
-                    );
+            if (res.data.meta.status == 200) {
+                this.$message({
+                    type: "success",
+                    message: res.data.meta.msg,
+                    duration: 1000
                 });
-            });
+
+                // this.roleList
+                this.getRoleList(() => {
+                    this.$nextTick(() => {
+                        //让表格对应的项展开即可
+                        this.$refs.roleTable.toggleRowExpansion(
+                            this.roleList.find(v => v.id == row.id),
+                            true
+                        );
+                    });
+                });
+            }
         },
         async updateRoleRights() {
             // 1. 获取tree组件中，所有被勾选的节点的id
@@ -234,14 +219,14 @@ export default {
 
             this.checkedRights = [...level3Ids];
         },
-        async getRoleList(t = () => {}) {
+        async getRoleList(callback) {
             let res = await this.$http({
                 url: "roles"
             });
 
             // console.log(res);
             this.roleList = res.data.data;
-            t();
+            callback && callback();
         }
     },
     created() {
