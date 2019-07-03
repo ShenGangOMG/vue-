@@ -17,7 +17,10 @@
                         :key="level1.id"
                     >
                         <el-col :span="6">
-                            <el-tag closable @close="deleteRight(row, level1.id)">{{level1.authName}}</el-tag>
+                            <el-tag
+                                closable
+                                @close="deleteRight(row, level1.id)"
+                            >{{level1.authName}}</el-tag>
                             <i class="el-icon-arrow-right"></i>
                         </el-col>
                         <el-col>
@@ -29,7 +32,11 @@
                                 :key="level2.id"
                             >
                                 <el-col :span="6">
-                                    <el-tag closable type="success" @close="deleteRight(row, level2.id)">{{level2.authName}}</el-tag>
+                                    <el-tag
+                                        closable
+                                        type="success"
+                                        @close="deleteRight(row, level2.id)"
+                                    >{{level2.authName}}</el-tag>
                                     <i class="el-icon-arrow-right"></i>
                                 </el-col>
                                 <el-col>
@@ -114,7 +121,7 @@ export default {
         };
     },
     methods: {
-        async deleteRight(row, id){
+        async deleteRight(row, id) {
             // console.log(row, id);
             // 把row里面children中所有的id拼接成一个数组
             // 获取一级权限的id，组合成数组
@@ -151,13 +158,16 @@ export default {
                 type: "success",
                 message: res.data.meta.msg,
                 duration: 1000
-            })
+            });
 
-            this.getRoleList();
-
-            // this.$nextTick(() => {
-            //     this.$refs.roleTable.toggleRowExpansion(this.roleList.find(v => v.id == row.id), true);
-            // })
+            this.getRoleList(() => {
+                this.$nextTick(() => {
+                    this.$refs.roleTable.toggleRowExpansion(
+                        this.roleList.find(v => v.id == row.id),
+                        true
+                    );
+                });
+            });
         },
         async updateRoleRights() {
             // 1. 获取tree组件中，所有被勾选的节点的id
@@ -180,7 +190,7 @@ export default {
                 type: "success",
                 message: res.data.meta.msg,
                 duration: 1000
-            })
+            });
 
             // 4. 更新成功之后，重新获取列表数据
             this.getRoleList();
@@ -208,29 +218,30 @@ export default {
             // checkedRights ： 我们需要把当前角色row中所有的权限的id，组合成一个数组，赋值给checkedRights
             // console.log(row);
             // 获取一级权限的id，组合成数组
-            let level1Ids = [];
-            let level2Ids = [];
+            // let level1Ids = [];
+            // let level2Ids = [];
             let level3Ids = [];
             // 获取二级权限的id，组合成数组
             row.children.forEach(level1 => {
-                level1Ids.push(level1.id);
+                // level1Ids.push(level1.id);
                 level1.children.forEach(level2 => {
-                    level2Ids.push(level2.id);
+                    // level2Ids.push(level2.id);
                     level2.children.forEach(level3 => {
                         level3Ids.push(level3.id);
                     });
                 });
             });
 
-            this.checkedRights = [...level1Ids, ...level2Ids, ...level3Ids];
+            this.checkedRights = [...level3Ids];
         },
-        async getRoleList() {
+        async getRoleList(t = () => {}) {
             let res = await this.$http({
                 url: "roles"
             });
 
             // console.log(res);
             this.roleList = res.data.data;
+            t();
         }
     },
     created() {
