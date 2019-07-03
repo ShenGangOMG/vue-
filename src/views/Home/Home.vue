@@ -44,7 +44,7 @@
                     <!-- index 这个是当前菜单项的id 唯一标识 -->
 
                     <!-- el-menu-item 这个组件就是每一个没有子菜单项的菜单 -->
-                    <el-submenu v-for="menu1 in menusList" :key="menu1.id" :index="menu1.id">
+                    <el-submenu v-for="menu1 in menusList" :key="menu1.id" :index="menu1.id + ''">
                         <template slot="title">
                             <i class="el-icon-location"></i>
                             <span>{{menu1.authName}}</span>
