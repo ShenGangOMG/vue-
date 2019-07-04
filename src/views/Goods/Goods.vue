@@ -5,7 +5,7 @@
             <el-breadcrumb-item>商品管理</el-breadcrumb-item>
             <el-breadcrumb-item>商品列表</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-button type="success" plain>添加商品</el-button>
+        <el-button type="success" plain @click="$router.push('/goods-add')">添加商品</el-button>
         <el-table
             ref="singleTable"
             :data="goodsList"
